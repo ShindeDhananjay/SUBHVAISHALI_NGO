@@ -32,9 +32,26 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api", async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await connectDB();
+    next();
+  } catch (error: any) {
+    console.error("API Error:", error);
+    res.status(500).json({ 
+      message: "Database connection failed. Please check your configuration.",
+      error: process.env.NODE_ENV === "production" ? undefined : error.message 
+    });
+  }
 }, apiRoutes);
+
+// Global error handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error("Unhandled Error:", err);
+  res.status(err.status || 500).json({
+    message: err.message || "An unexpected error occurred",
+    error: process.env.NODE_ENV === "production" ? undefined : err.stack
+  });
+});
 
 export { app };
 
