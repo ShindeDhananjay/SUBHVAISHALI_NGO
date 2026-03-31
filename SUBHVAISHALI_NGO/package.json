@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "start": "tsx server.ts"
+    "start": "tsx server.ts",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
